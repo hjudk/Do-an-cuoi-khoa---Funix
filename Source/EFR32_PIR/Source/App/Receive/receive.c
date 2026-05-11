@@ -26,6 +26,13 @@ void USART2_RX_IRQHandler(void)
 
 }
 */
+
+/**
+ * @func    emberAfPreCommandReceivedCallback
+ * @brief   Process Command Received
+ * @param   EmberAfClusterCommand
+ * @retval  boolean
+ */
 boolean emberAfPreCommandReceivedCallback(EmberAfClusterCommand *cmd)
 {
 
@@ -41,41 +48,46 @@ boolean emberAfPreCommandReceivedCallback(EmberAfClusterCommand *cmd)
 		}
     }
 
-    // TrÃ¡ÂºÂ£ false Ã¢â€ â€™ cho phÃƒÂ©p framework xÃ¡Â»Â­ lÃƒÂ½ tiÃ¡ÂºÂ¿p nÃ¡ÂºÂ¿u chÃ†Â°a xÃ¡Â»Â­ lÃƒÂ½
     return false;
 }
 
 
-
+/*
+ * @function 			: checkBindingTable
+ * @brief				: API support to check information on binding table.
+ * @parameter			: localEndpoint
+ * @return value		: True or false
+ */
 uint8_t checkBindingTable(uint8_t localEndpoint)
 {
-	uint8_t index = 0; // BiÃ¡ÂºÂ¿n Ã„â€˜Ã¡ÂºÂ¿m sÃ¡Â»â€˜ binding hÃ¡Â»Â£p lÃ¡Â»â€¡
+	uint8_t index = 0;
 
-	// DuyÃ¡Â»â€¡t toÃƒÂ n bÃ¡Â»â„¢ bÃ¡ÂºÂ£ng binding
 	for(uint8_t i=0; i< EMBER_BINDING_TABLE_SIZE; i++)
 	{
 		EmberBindingTableEntry binding;
 
-		// KiÃ¡Â»Æ’m tra entry cÃƒÂ³ tÃ¡Â»â€œn tÃ¡ÂºÂ¡i (khÃƒÂ´ng phÃ¡ÂºÂ£i Ã„â€˜Ã¡Â»â€¹a chÃ¡Â»â€° broadcast)
 		if(emberGetBindingRemoteNodeId(i) != EMBER_SLEEPY_BROADCAST_ADDRESS)
 		{
-			// LÃ¡ÂºÂ¥y thÃƒÂ´ng tin binding
 			if (emberGetBinding(i, &binding) == EMBER_SUCCESS)
 			{
-				// KiÃ¡Â»Æ’m tra Ã„â€˜ÃƒÂºng endpoint vÃƒÂ  kiÃ¡Â»Æ’u unicast binding
 				if(binding.local == localEndpoint &&
 				   binding.type == EMBER_UNICAST_BINDING)
 				{
-					index++; // TÃ„Æ’ng sÃ¡Â»â€˜ lÃ†Â°Ã¡Â»Â£ng binding hÃ¡Â»Â£p lÃ¡Â»â€¡
+					index++;
 				}
 			}
 		}
 	}
 
-	return index; // TrÃ¡ÂºÂ£ vÃ¡Â»ï¿½ sÃ¡Â»â€˜ binding
+	return index;
 }
 
-
+/**
+ * @func    RECEIVE_HandleOnOffCluster
+ * @brief   Handler On/Off command
+ * @param   EmberAfClusterCommand
+ * @retval  bool
+ */
 bool RECEIVE_HandleOnOffCluster(EmberAfClusterCommand* cmd)
 {
 	uint8_t commandID = cmd->commandId; // Lấy ID của command (ON/OFF)

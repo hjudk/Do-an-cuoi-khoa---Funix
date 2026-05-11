@@ -50,6 +50,12 @@ void emberAfMainInitCallback(void)
 	emberEventControlSetActive(mainStateEventControl);
 }
 
+/*
+ * @func	Main_ButtonPressCallbackHandler
+ * @brief	Event Button Handler
+ * @param	button, pressHandler
+ * @retval	None
+ */
 void Main_PIREventHandler(uint8_t pirAction)
 {
 	switch (pirAction) {
@@ -80,32 +86,36 @@ void Main_PIREventHandler(uint8_t pirAction)
 	}
 }
 
-
-// Callback xá»­ lÃ½ khi nháº¥n nÃºt
+/*
+ * @func	Main_ButtonPressCallbackHandler
+ * @brief	Event Button Handler
+ * @param	button, pressHandler
+ * @retval	None
+ */
 void Main_ButtonPressCallbackHandler(uint8_t button, BUTTON_Event_t pressHandler)
 {
 	switch(pressHandler)
 	{
-	case press_1: // Nháº¥n 1 láº§n
+	case press_1:
 		if(button == SW_2)
 		{
 			toggleLed(LED1,ledPink,1,150,150);
 		}
 		break;
 
-	case press_4: // Nháº¥n 1 láº§n
+	case press_4:
 		if(button == SW_2)
 		{
 			toggleLed(LED1,ledPink,1,150,150);
 			emberAfPluginFindAndBindInitiatorStart(1);
 		}
 		break;
-	case press_5: // Nháº¥n 5 láº§n
+	case press_5:
 		if(button == SW_2)
 		{
 			emberAfCorePrintln("SW2: 5 times");
 			toggleLed(LED1,ledyellow, 2, 200, 200);
-			system_State = REBOOT_STATE; // Chuyá»ƒn sang tráº¡ng thÃ¡i reboot
+			system_State = REBOOT_STATE;
 			emberEventControlSetDelayMS(mainStateEventControl,2000);
 		}
 		break;
@@ -115,49 +125,56 @@ void Main_ButtonPressCallbackHandler(uint8_t button, BUTTON_Event_t pressHandler
 	}
 }
 
-
-// Callback giá»¯ nÃºt (chÆ°a xá»­ lÃ½)
+/*
+ * @func	Main_ButtonHoldCallbackHandler
+ * @brief	Event Button Handler
+ * @param	button, holdingHandler
+ * @retval	None
+ */
 void Main_ButtonHoldCallbackHandler(uint8_t button, BUTTON_Event_t holdingHandler)
 {
 	//
 }
 
-
-// Event handler tráº¡ng thÃ¡i chÃ­nh
+/*
+ * @func	mainStateEventHandler
+ * @brief	Handle Event State Network
+ * @param	None
+ * @retval	None
+ */
 void mainStateEventHandler(void)
 {
-	emberEventControlSetInactive(mainStateEventControl); // Táº¯t event sau khi xá»­ lÃ½
+	emberEventControlSetInactive(mainStateEventControl);
 
 	EmberNetworkStatus nwkStatusCurrent;
 
 	switch (system_State) {
 
-	case POWER_ON_STATE: // Khi vá»«a báº­t nguá»“n
+	case POWER_ON_STATE:
 		nwkStatusCurrent = emberAfNetworkState();
 		if(nwkStatusCurrent == EMBER_NO_NETWORK)
 		{
 			toggleLed(LED1,ledRed,3,200,200);
-			NETWORK_FindAndJoin(); // TÃ¬m vÃ  join máº¡ng
+			NETWORK_FindAndJoin();
 		}
 		system_State = IDLE_STATE;
 		break;
 
-	case REPORT_STATE: // Gá»­i dá»¯ liá»‡u
+	case REPORT_STATE:
 		system_State = IDLE_STATE;
 		SEND_ReportInfoHc();
 		break;
 
-	case IDLE_STATE: // Tráº¡ng thÃ¡i chá»�
+	case IDLE_STATE:
 		emberAfCorePrintln("IDLE_STATE");
 		break;
 
-	case REBOOT_STATE: // Reset thiáº¿t bá»‹
+	case REBOOT_STATE:
 		system_State = IDLE_STATE;
 
 		uint8_t contents[ZDO_MESSAGE_OVERHEAD + 1];
 		contents[0] = 0x00;
 
-		// Gá»­i lá»‡nh leave tá»›i coordinator
 		emberSendZigDevRequest(0x0000,
 				LEAVE_RESPONSE,
 				EMBER_AF_DEFAULT_APS_OPTIONS,
@@ -166,13 +183,13 @@ void mainStateEventHandler(void)
 
 		EmberNetworkStatus networkStatus = emberAfNetworkState();
 
-		emberClearBindingTable(); // XÃ³a báº£ng binding
+		emberClearBindingTable();
 
 		if (networkStatus == EMBER_JOINED_NETWORK)
 		{
-			emberLeaveNetwork(); // Rá»�i máº¡ng
+			emberLeaveNetwork();
 		}
-		halReboot(); // Reset MCU
+		halReboot();
 		break;
 
 	default:
@@ -180,15 +197,19 @@ void mainStateEventHandler(void)
 	}
 }
 
-
-// Xá»­ lÃ½ sá»± kiá»‡n network
+/*
+ * @func	Main_networkEventHandler
+ * @brief	Handler Event Result Network
+ * @param	networkResult
+ * @retval	None
+ */
 void Main_networkEventHandler(uint8_t networkResult)
 {
 	emberAfCorePrintln("Network Event Handle");
 
 	switch (networkResult) {
 
-	case NETWORK_HAS_PARENT: // Ä�Ã£ cÃ³ parent
+	case NETWORK_HAS_PARENT:
 		emberAfCorePrintln("Network has parent");
 		toggleLed(LED1,ledPink,3,300,300);
 		networkReady = true;
@@ -196,14 +217,14 @@ void Main_networkEventHandler(uint8_t networkResult)
 		emberEventControlSetDelayMS(mainStateEventControl, 1000);
 		break;
 
-	case NETWORK_JOIN_FAIL: // Join tháº¥t báº¡i
+	case NETWORK_JOIN_FAIL:
 		system_State = IDLE_STATE;
 		toggleLed(LED1,ledBlue,3,300,300);
 		emberAfCorePrintln("Network Join Fail");
 		emberEventControlSetDelayMS(mainStateEventControl, 1000);
 		break;
 
-	case NETWORK_JOIN_SUCCESS: // Join thÃ nh cÃ´ng
+	case NETWORK_JOIN_SUCCESS:
 		emberAfCorePrintln("Network Join Success");
 		toggleLed(LED1,ledPink,3,300,300);
 		networkReady =true;
@@ -211,14 +232,14 @@ void Main_networkEventHandler(uint8_t networkResult)
 		emberEventControlSetDelayMS(mainStateEventControl, 1000);
 		break;
 
-	case NETWORK_LOST_PARENT: // Máº¥t káº¿t ná»‘i parent
+	case NETWORK_LOST_PARENT:
 		emberAfCorePrintln("Network lost parent");
 		toggleLed(LED1,ledPink,3,300,300);
 		system_State = REBOOT_STATE;
 		emberEventControlSetDelayMS(mainStateEventControl, 1000);
 		break;
 
-	case NETWORK_OUT_NETWORK: // Bá»‹ out khá»�i máº¡ng
+	case NETWORK_OUT_NETWORK:
 		if(networkReady)
 		{
 			toggleLed(LED1,ledRed,3,300,300);
@@ -243,6 +264,12 @@ void emberIncomingManyToOneRouteRequestHandler(EmberNodeId source,
 	emberEventControlSetDelayMS(MTORRsEventControl, 2 * ((uint8_t)halCommonGetRandom()));
 }
 
+/*
+ * @func	MTORRsEventHandler
+ * @brief	Read Status
+ * @param	None
+ * @retval	None
+ */
 void MTORRsEventHandler(void) {
 	emberEventControlSetInactive(MTORRsEventControl);
 	uint8_t data;
