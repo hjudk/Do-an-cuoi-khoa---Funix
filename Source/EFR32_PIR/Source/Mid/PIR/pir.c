@@ -103,18 +103,18 @@ void pirDetectEventHandler(void)
 			if(isMotionSignal())
 			{
 				emberAfCorePrintln("PIR_DETECT_MOTION");
-				pirState = PIR_STATE_WAIT_1S;
+				pirState = PIR_STATE_WAIT_2_5S;
 				if(PirCallbackFunc!= NULL)
 				{
 					PirCallbackFunc(PIR_MOTION);
 				}
-				emberEventControlSetDelayMS(pirDetectEventControl, 1000);
+				emberEventControlSetDelayMS(pirDetectEventControl, 2500);
 			}else
 			{
 				PIR_Enable(true);
 			}
 			break;
-		case PIR_STATE_WAIT_1S:
+		case PIR_STATE_WAIT_2_5S:
 			{
 				status = false;
 				pirState = PIR_STATE_WAIT_15S;
