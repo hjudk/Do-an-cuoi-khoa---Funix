@@ -10,18 +10,33 @@
 #include <stdbool.h>
 #include "fifo.h"
 
-// Khởi tạo hàng đợi rỗng
+/**
+ * @func   initQueue
+ * @brief  FIFO queue initialize
+ * @param  q
+ * @retval None
+ */
 void initQueue(Queue* q) {
     q->front = 0;
     q->rear = -1;
 }
 
-// Kiểm tra hàng đợi có rỗng không
+/**
+ * @func   initQueue
+ * @brief  FIFO queue check empty
+ * @param  q
+ * @retval True or false
+ */
 int isEmpty(Queue q) {
     return q.front > q.rear;
 }
 
-// Kiểm tra hàng đợi có đầy không
+/**
+ * @func   isFull
+ * @brief  FIFO queue check full
+ * @param  q
+ * @retval True or false
+ */
 int isFull(Queue q) {
     if ((q.rear - q.front + 1) == FIFO_SIZE) {
         return 1;
@@ -30,7 +45,13 @@ int isFull(Queue q) {
         return 0;
     }
 }
-// Hàm thêm phần tử vào cuối hàng đợi (enqueue)
+
+/**
+ * @func   enQueue
+ * @brief  FIFO enqueue
+ * @param  1, x
+ * @retval None
+ */
 void enQueue(Queue *q, uint8_t x) {
     if (!isFull(*q)) {
         if (q->rear == -1) { // Hàng đợi rỗng
@@ -50,7 +71,12 @@ void enQueue(Queue *q, uint8_t x) {
     }
 }
 
-// Hàm lấy phần tử ra khỏi đầu hàng đợi (dequeue)
+/**
+ * @func   enQueue
+ * @brief  FIFO dequeue
+ * @param  q
+ * @retval d
+ */
 uint8_t deQueue(Queue* q) {
 	uint8_t d= 0;
     if (!isEmpty(*q)) {

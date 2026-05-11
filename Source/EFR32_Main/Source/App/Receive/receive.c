@@ -12,7 +12,12 @@
 
 #include "receive.h"
 
-
+/**
+ * @func    emberAfPreCommandReceivedCallback
+ * @brief   Process Command Received
+ * @param   EmberAfClusterCommand
+ * @retval  boolean
+ */
 boolean emberAfPreCommandReceivedCallback(EmberAfClusterCommand *cmd)
 {
 	if(cmd->clusterSpecific)
@@ -32,6 +37,12 @@ boolean emberAfPreCommandReceivedCallback(EmberAfClusterCommand *cmd)
     return false;
 }
 
+/**
+ * @func    emberAfPreMessageReceivedCallback
+ * @brief   Process Pre message received
+ * @param   EmberAfIncomingMessage
+ * @retval  None
+ */
 boolean emberAfPreMessageReceivedCallback(EmberAfIncomingMessage* incommingMessage)
 {
 
@@ -43,7 +54,15 @@ boolean emberAfPreMessageReceivedCallback(EmberAfIncomingMessage* incommingMessa
 	return false;
 }
 
-
+/*
+ * @function 			: checkBindingTable
+ *
+ * @brief				: API support to check information on binding table.
+ *
+ * @parameter			: localEndpoint
+ *
+ * @return value		: True or false
+ */
 uint8_t checkBindingTable(uint8_t localEndpoint)
 {
 	uint8_t index = 0;

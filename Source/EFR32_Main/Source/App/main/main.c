@@ -22,18 +22,16 @@
 #include "main.h"
 #include "math.h"
 
-bool networkReady = false;                 // Cá»� bÃ¡o máº¡ng Ä‘Ã£ sáºµn sÃ ng hay chÆ°a
-systemState system_State = POWER_ON_STATE; // Tráº¡ng thÃ¡i há»‡ thá»‘ng ban Ä‘áº§u
+bool networkReady = false;
+systemState system_State = POWER_ON_STATE;
 
-// Khai bÃ¡o prototype cÃ¡c hÃ m callback
 void Main_ButtonPressCallbackHandler(uint8_t button, BUTTON_Event_t pressHandler);
 void Main_ButtonHoldCallbackHandler(uint8_t button, BUTTON_Event_t holdingHandler);
 void Main_networkEventHandler(uint8_t networkResult);
 void Main_StmCountReceivedHandler(uint8_t count);
 
-// CÃ¡c event control cá»§a há»‡ thá»‘ng (dÃ¹ng cho event-driven)
-EmberEventControl mainStateEventControl;   // Event xá»­ lÃ½ tráº¡ng thÃ¡i chÃ­nh
-EmberEventControl FindNetworkControl;      // Event tÃ¬m máº¡ng
+EmberEventControl mainStateEventControl;
+EmberEventControl FindNetworkControl;
 EmberEventControl MTORRsEventControl;
 EmberEventControl mainUpdateCount;
 
@@ -59,10 +57,15 @@ void emberAfMainInitCallback(void)
 	emberEventControlSetActive(mainUpdateCount);
 }
 
-static uint8_t byRxData;
 static uint8_t count = 0;
 static uint8_t prev_count = 0;
 
+/*
+ * @func	mainUpdateCountHandler
+ * @brief	Event Update Count Handler
+ * @param	None
+ * @retval	None
+ */
 void mainUpdateCountHandler(void)
 {
     emberEventControlSetInactive(mainUpdateCount);
@@ -142,6 +145,13 @@ void Main_StmCountReceivedHandler(uint8_t count)
     }
 }
 
+
+/*
+ * @func	Main_ButtonPressCallbackHandler
+ * @brief	Event Button Handler
+ * @param	button, pressHandler
+ * @retval	None
+ */
 void Main_ButtonPressCallbackHandler(uint8_t button, BUTTON_Event_t pressHandler)
 {
 	switch(pressHandler)
@@ -186,13 +196,23 @@ void Main_ButtonPressCallbackHandler(uint8_t button, BUTTON_Event_t pressHandler
 }
 
 
-
+/*
+ * @func	Main_ButtonHoldCallbackHandler
+ * @brief	Event Button Handler
+ * @param	button, holdingHandler
+ * @retval	None
+ */
 void Main_ButtonHoldCallbackHandler(uint8_t button, BUTTON_Event_t holdingHandler)
 {
 	//
 }
 
-
+/*
+ * @func	mainStateEventHandler
+ * @brief	Handle Event State Network
+ * @param	None
+ * @retval	None
+ */
 void mainStateEventHandler(void)
 {
 	emberEventControlSetInactive(mainStateEventControl);
@@ -248,7 +268,12 @@ void mainStateEventHandler(void)
 	}
 }
 
-
+/*
+ * @func	Main_networkEventHandler
+ * @brief	Handler Event Result Network
+ * @param	networkResult
+ * @retval	None
+ */
 void Main_networkEventHandler(uint8_t networkResult)
 {
 	emberAfCorePrintln("Network Event Handle");
@@ -299,7 +324,12 @@ void Main_networkEventHandler(uint8_t networkResult)
 	}
 }
 
-
+/*
+ * @func	emberIncomingManyToOneRouteRequestHandler
+ * @brief	Incoming MTORR Handler
+ * @param	source, longID, cost
+ * @retval	None
+ */
 void emberIncomingManyToOneRouteRequestHandler(EmberNodeId source,
 		                                       EmberEUI64 longId,
 											   uint8_t cost)
@@ -310,6 +340,12 @@ void emberIncomingManyToOneRouteRequestHandler(EmberNodeId source,
 	emberEventControlSetDelayMS(MTORRsEventControl, 2 * ((uint8_t)halCommonGetRandom()));
 }
 
+/*
+ * @func	MTORRsEventHandler
+ * @brief	Read Status
+ * @param	None
+ * @retval	None
+ */
 void MTORRsEventHandler(void) {
 	emberEventControlSetInactive(MTORRsEventControl);
 	uint8_t data;

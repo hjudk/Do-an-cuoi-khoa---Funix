@@ -12,7 +12,12 @@
 #include "Source/App/Receive/receive.h"
 #include "zigbee-framework/zigbee-device-common.h"
 
-// Send UNICAST
+/**
+ * @func    SEND_SendCommandUnicast
+ * @brief   Send uinicast command
+ * @param   source, destination, address
+ * @retval  None
+ */
 static void SEND_SendCommandUnicast(uint8_t source,
 							 uint8_t destination,
 							 uint8_t address)
@@ -23,7 +28,12 @@ static void SEND_SendCommandUnicast(uint8_t source,
 }
 
 
-
+/**
+ * @func    SEND_FillBufferGlobalCommand
+ * @brief   Send fill buffer global command
+ * @param   clusterID, attributeID, globalCommand, value, length, dataType
+ * @retval  None
+ */
 static void SEND_FillBufferGlobalCommand(EmberAfClusterId clusterID,
 								  EmberAfAttributeId attributeID,
 								  uint8_t globalCommand,
@@ -54,7 +64,12 @@ static void SEND_FillBufferGlobalCommand(EmberAfClusterId clusterID,
 	);
 }
 
-
+/**
+ * @func    SEND_ReportInfoHc
+ * @brief   Send Report to HC
+ * @param   None
+ * @retval  None
+ */
 void SEND_ReportInfoHc(void)
 {
 	// Model ID
@@ -70,7 +85,7 @@ void SEND_ReportInfoHc(void)
 		return;
 	}
 
-	// ---- Gá»­i Model ID ----
+	// ---- Model ID ----
 	SEND_FillBufferGlobalCommand(ZCL_BASIC_CLUSTER_ID,
 								 ZCL_MODEL_IDENTIFIER_ATTRIBUTE_ID,
 								 ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID,
@@ -83,7 +98,7 @@ void SEND_ReportInfoHc(void)
 							HC_NETWORK_ADDRESS);
 
 
-	// ---- Gá»­i Manufacturer ----
+	// ----Manufacturer ----
 	SEND_FillBufferGlobalCommand(ZCL_BASIC_CLUSTER_ID,
 								 ZCL_MANUFACTURER_NAME_ATTRIBUTE_ID,
 								 ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID,
@@ -96,7 +111,7 @@ void SEND_ReportInfoHc(void)
 							HC_NETWORK_ADDRESS);
 
 
-	// ---- Gá»­i Version ----
+	// ----Version ----
 	SEND_FillBufferGlobalCommand(ZCL_BASIC_CLUSTER_ID,
 								 ZCL_APPLICATION_VERSION_ATTRIBUTE_ID,
 								 ZCL_READ_ATTRIBUTES_RESPONSE_COMMAND_ID,
@@ -111,9 +126,12 @@ void SEND_ReportInfoHc(void)
 
 
 
-
-
-
+/**
+ * @func    SEND_OnOffStateReport
+ * @brief   Send On/Off State
+ * @param   Endpoint, value
+ * @retval  None
+ */
 void SEND_OnOffStateReport(uint8_t Endpoint, uint8_t value){
 
 	SEND_FillBufferGlobalCommand(ZCL_ON_OFF_CLUSTER_ID,
@@ -134,6 +152,12 @@ void SEND_OnOffStateReport(uint8_t Endpoint, uint8_t value){
 								ZCL_BOOLEAN_ATTRIBUTE_TYPE);
 }
 
+/**
+ * @func    SEND_PIRStateReport
+ * @brief   Send PIR value to App
+ * @param   Endpoint, value
+ * @retval  None
+ */
 void SEND_PIRStateReport(uint8_t endpoint, uint8_t value){
 	SEND_FillBufferGlobalCommand(ZCL_IAS_ZONE_CLUSTER_ID,
 								 ZCL_ZONE_STATUS_ATTRIBUTE_ID,

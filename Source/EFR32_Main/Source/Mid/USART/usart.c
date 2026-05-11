@@ -115,19 +115,3 @@ void USART2_RX_IRQHandler(void)
 
     USART_IntClear(USART2, USART_IF_RXOF | USART_IF_FERR | USART_IF_PERR);
 }
-/*
-void USART2_RX_IRQHandler(void)
-{
-    uint32_t flags = USART_IntGet(USART2);
-
-    if (flags & USART_IF_RXDATAV) {
-        uint8_t count = (uint8_t)USART_Rx(USART2);
-
-        emberAfCorePrintln("RX: 0x%02X", count);
-        s_rx_callback(count);
-    }
-
-    USART_IntClear(USART2, USART_IF_RXOF
-                         | USART_IF_FERR
-                         | USART_IF_PERR);
-}*/

@@ -12,13 +12,29 @@ EmberEventControl joinNetworkEventControl;
 uint32_t timeFindAndJoin = 0;
 networkEventHandler networkEventHandle = NULL;
 
-
+/*
+ * @function 			: Network_Init
+ *
+ * @brief				: Handle event network.
+ *
+ * @parameter			: networkEventHandler
+ *
+ * @return value		: None
+ */
 void Network_Init(networkEventHandler networkResult)
 {
 	networkEventHandle = networkResult;
 }
 
-
+/*
+ * @function 			: NETWORK_FindAndJoin
+ *
+ * @brief				: Find network
+ *
+ * @parameter			: None
+ *
+ * @return value		: None
+ */
 void NETWORK_FindAndJoin(void)
 {
 	if(emberAfNetworkState() == EMBER_NO_NETWORK)
@@ -28,14 +44,30 @@ void NETWORK_FindAndJoin(void)
 }
 
 
-
+/*
+ * @function 			: NETWORK_StopFindAndJoin
+ *
+ * @brief				: Stop find network
+ *
+ * @parameter			: None
+ *
+ * @return value		: None
+ */
 void NETWORK_StopFindAndJoin(void)
 {
 	emberAfPluginNetworkSteeringStop();
 }
 
 
-
+/*
+ * @function 			: joinNetworkEventHandler
+ *
+ * @brief				: Handle Event Join network
+ *
+ * @parameter			: None
+ *
+ * @return value		: None
+ */
 void joinNetworkEventHandler(void)
 {
 	emberEventControlSetInactive(joinNetworkEventControl);
@@ -50,7 +82,15 @@ void joinNetworkEventHandler(void)
 	}
 }
 
-
+/*
+ * @function 			: emberAfStackStatusCallback
+ *
+ * @brief				: Stack Status
+ *
+ * @parameter			: EmberStatus
+ *
+ * @return value		: True or false
+ */
 boolean emberAfStackStatusCallback(EmberStatus status)
 {
 	emberAfCorePrintln("emberAfStackStatusCallback\n");
